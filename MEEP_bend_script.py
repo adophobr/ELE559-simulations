@@ -47,23 +47,17 @@ si_zmax = 0
 # Clear MEEP memory (otherwise will just add stuff over old stuff)
 try: del si_layer
 except NameError: x = None
-    
+
 # Manual fix
 # geometry = []
 # geometry.append(mp.Cylinder(material=silicon, center=mp.Vector3(0,-1*ring_radius,0), radius=ring_radius + ring_width/2, height=0))
 # geometry.append(mp.Cylinder(material=oxide, center=mp.Vector3(0,-1*ring_radius,0), radius=ring_radius - ring_width/2, height=0))
 # geometry.append(mp.Block(material=oxide, center=mp.Vector3(-0.5*ring_radius,0,0), size=mp.Vector3(ring_radius,2*ring_radius,0)))
 # geometry.append(mp.Block(material=oxide, center=mp.Vector3(ring_radius,-1.5*ring_radius,0), size=mp.Vector3(2*ring_radius,ring_radius,0)))
-    
+
 si_layer = mp.get_GDSII_prisms(silicon, gdsII_file, Si_LAYER, si_zmin, si_zmax)
 
-# # Later objects get priority : fix
-final_geometry = []
-# for fix in geometry:
-#     final_geometry.append(fix)
-for fix in si_layer:
-    final_geometry.append(fix)
-
+final_geometry = list(si_layer)
 cell = mp.GDSII_vol(gdsII_file, CELL_LAYER, cell_zmin, cell_zmax)
 src_vol = mp.GDSII_vol(gdsII_file, SOURCE_LAYER, si_zmin, si_zmax)
 p1 = mp.GDSII_vol(gdsII_file, 20, si_zmin, si_zmax)
